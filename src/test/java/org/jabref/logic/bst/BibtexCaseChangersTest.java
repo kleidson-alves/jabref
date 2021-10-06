@@ -2,6 +2,8 @@ package org.jabref.logic.bst;
 
 import java.util.stream.Stream;
 
+import java.util.Optional;
+
 import org.jabref.logic.bst.BibtexCaseChanger.FORMAT_MODE;
 
 import org.junit.jupiter.api.Disabled;
@@ -144,5 +146,113 @@ public class BibtexCaseChangersTest {
         // assertCaseChangerTitleUppers("This {IS} Another Simple Example Tit{LE}", "This {IS} another simple example tit{LE}");
         // assertCaseChangerTitleUppers("{What ABOUT thIS} one?", "{What ABOUT thIS} one?");
         // assertCaseChangerTitleUppers("{And {thIS} might {a{lso}} be possible}", "{And {thIS} might {a{lso}} be possible}")
+    }
+
+    @Test
+    public void testPosAtEnd() {
+        char[] test = {'a', 'b'};
+        assertEquals( Optional.empty() , BibtexCaseChanger.findSpecialChar( test , 1));
+    }
+
+    @Test
+    public void testWithCharOFollowedByE() {
+        char[] test = {'a', 'b', 'o', 'e'};
+        assertEquals( Optional.of("oe") , BibtexCaseChanger.findSpecialChar( test , 2));
+    }
+
+    @Test
+    public void testCharUpperOFollowedByUpperE() {
+        char[] test = {'O', 'E'};
+        assertEquals( Optional.of("OE") , BibtexCaseChanger.findSpecialChar( test , 0));
+    }
+
+    @Test
+    public void testCharAFollowedByE() {
+        char[] test = {'a', 'e'};
+        assertEquals( Optional.of("ae") , BibtexCaseChanger.findSpecialChar( test , 0));
+    }
+
+    @Test
+    public void testCharUpperAFollowedByUpperE() {
+        char[] test = {'A', 'E'};
+        assertEquals( Optional.of("AE") , BibtexCaseChanger.findSpecialChar( test , 0));
+    }
+
+    @Test
+    public void testWithDoubleS() {
+        char[] test = { 's', 's'};
+        assertEquals( Optional.of("ss") , BibtexCaseChanger.findSpecialChar( test , 0));
+    }
+
+    @Test
+    public void testWithDoubleUpperA() {
+        char[] test = {'A', 'A'};
+        assertEquals( Optional.of("AA") , BibtexCaseChanger.findSpecialChar( test , 0));
+    }
+
+    @Test
+    public void testWithDoubleA() {
+        char[] test = {'a', 'a'};
+        assertEquals( Optional.of("aa") , BibtexCaseChanger.findSpecialChar( test , 0));
+    }
+
+    @Test
+    public void testPosAtO() {
+        char[] test = {'o', 'g'};
+        assertEquals( Optional.of("o") , BibtexCaseChanger.findSpecialChar( test , 0));
+    }
+
+    @Test
+    public void testPosAtUpperO() {
+        char[] test = {'O', 'g'};
+        assertEquals( Optional.of("O") , BibtexCaseChanger.findSpecialChar( test , 0));
+    }
+
+    @Test
+    public void testPosAtA() {
+        char[] test = {'a', 'g'};
+        assertEquals( Optional.empty(), BibtexCaseChanger.findSpecialChar( test , 0));
+    }
+
+    @Test
+    public void testPosAtUpperA() {
+        char[] test = {'A', 'g'};
+        assertEquals( Optional.empty(), BibtexCaseChanger.findSpecialChar( test , 0));
+    }
+
+    @Test
+    public void testPosAtS() {
+        char[] test = {'s', 'g'};
+        assertEquals( Optional.empty(), BibtexCaseChanger.findSpecialChar( test , 0));
+    }
+
+    @Test
+    public void testPosFollowedByE() {
+        char[] test = {'h', 'e'};
+        assertEquals( Optional.empty(), BibtexCaseChanger.findSpecialChar( test , 0));
+    }
+
+    @Test
+    public void testPosFollowedByUpperE() {
+        char[] test = {'h', 'E'};
+        assertEquals( Optional.empty(), BibtexCaseChanger.findSpecialChar( test , 0));
+    }
+
+    @Test
+    public void testPosFollowedByS() {
+        char[] test = {'h', 's'};
+        assertEquals( Optional.empty(), BibtexCaseChanger.findSpecialChar( test , 0));
+    }
+
+    @Test
+    public void testPosFollowedByA() {
+        char[] test = {'h', 'a'};
+        assertEquals( Optional.empty(), BibtexCaseChanger.findSpecialChar( test , 0));
+    }
+
+    @Test
+    public void testPosFollowedByUpperA() {
+        char[] test = {'h', 'A'};
+        assertEquals( Optional.empty(), BibtexCaseChanger.findSpecialChar( test , 0));
     }
 }
